@@ -1,4 +1,5 @@
-name: Deploy Node.js App via Docker & SSH
+name: Deploy Botify Backend
+description: This workflow builds and deploys the Botify backend to Docker Hub and then deploys
 
 on:
   push:
