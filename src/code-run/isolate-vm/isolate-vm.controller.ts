@@ -14,7 +14,7 @@ const servers: ServerRegistry = {};
 
 async function fetchTool(toolId: any) {
   try {
-    const response = await fetch(`http://localhost:3000/v1/api/mcp-server/tool-code/get/${toolId}`, {
+    const response = await fetch(`http://localhost:4001/v1/api/mcp-server/tool-code/get/${toolId}`, {
       headers: {
         "Content-Type": "application/json",
         "Authorization": `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI5MjE2NTc2NC1iYTRmLTRhMTctODBmNy1hZjY5ZTZiOTUxMjgiLCJpYXQiOjE3NDk0NjE1OTd9.GQxJLA7qwVua6LFbGrUsuvA2LJ72xkYJc2mlfl7OOMw`

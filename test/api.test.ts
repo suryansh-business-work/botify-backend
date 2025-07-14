@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:3000/parse-expense';
+const API_URL = 'http://localhost:4001/parse-expense';
 
 const testSentences: string[] = [
   "I had spent 20 INR on groceries from my Kotak credit card",

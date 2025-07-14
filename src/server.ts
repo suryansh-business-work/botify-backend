@@ -45,6 +45,8 @@ import isolateVmRoutes from './code-run/isolate-vm/isolate-vm.routes';
 // Organization routes
 import organizationRoutes from './organization-api/organization.routes';
 
+const port = 4001;
+
 // Express App Initialization
 const app = express();
 
@@ -118,7 +120,7 @@ app.get('/healthcheck', (_req, res) => {
 });
 
 app.get('/', (_req, res) => {
-  res.status(200).send('Server is running');
+  res.status(200).send(`🚀 Server is running at http://localhost:${port}`);
 });
 
 app.get('/data-and-time', (_req, res) => {
@@ -132,10 +134,9 @@ app.get('/data-and-time', (_req, res) => {
 const startServer = async () => {
   await connectDB(); // Connect to MongoDB first
 
-  const port = 3000;
   app.listen(port, () => {
     console.log(`🚀 Server is running at http://localhost:${port}`);
-    startWebSocketServer(); // Start WebSocket server only after DB is connected
+    // startWebSocketServer(); // Start WebSocket server only after DB is connected
   });
 };
 

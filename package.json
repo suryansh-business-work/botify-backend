@@ -4,9 +4,10 @@
   "description": "",
   "main": "parser.js",
   "scripts": {
-    "start": "ts-node src/server.ts",
-    "dev": "nodemon",
-    "build": "tsc",
+    "start": "nodemon public/index.js",
+    "dev": "nodemon index.ts",
+    "build": "node build.mjs",
+    "format": "prettier '**/*.{ts,tsx,scss,css,json}' --write --config ./.prettierrc",
     "start:prod": "node dist/server.js",
     "test": "jest"
   },
