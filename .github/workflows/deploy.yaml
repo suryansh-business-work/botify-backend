@@ -27,13 +27,13 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/sibera-backend-restart:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/botify-backend:latest
 
       - name: Check Node.js version in built image
         run: |
-          docker pull ${{ secrets.DOCKERHUB_USERNAME }}/sibera-backend-restart:latest
-          docker run --rm ${{ secrets.DOCKERHUB_USERNAME }}/sibera-backend-restart:latest node -v
-          docker run --rm ${{ secrets.DOCKERHUB_USERNAME }}/sibera-backend-restart:latest npm -v
+          docker pull ${{ secrets.DOCKERHUB_USERNAME }}/botify-backend:latest
+          docker run --rm ${{ secrets.DOCKERHUB_USERNAME }}/botify-backend:latest node -v
+          docker run --rm ${{ secrets.DOCKERHUB_USERNAME }}/botify-backend:latest npm -v
 
       - name: Deploy via SSH and Docker
         uses: appleboy/ssh-action@v1.0.3
@@ -43,7 +43,7 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script: |
-            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/sibera-backend-restart:latest
-            docker stop sibera-backend-restart || true
-            docker rm sibera-backend-restart || true
-            docker run -d --name sibera-backend-restart -p 4001:4001 --restart=always ${{ secrets.DOCKERHUB_USERNAME }}/sibera-backend-restart:latest
+            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/botify-backend:latest
+            docker stop botify-backend || true
+            docker rm botify-backend || true
+            docker run -d --name botify-backend -p 4001:4001 --restart=always ${{ secrets.DOCKERHUB_USERNAME }}/botify-backend:latest
