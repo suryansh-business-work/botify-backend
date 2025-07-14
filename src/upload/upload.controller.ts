@@ -5,9 +5,9 @@ import { errorResponse, successResponseArr } from '../utils/response-object'
 dotenv.config();
 
 const imagekit = new ImageKit({
-  publicKey: process.env.IMAGEKIT_PUBLIC_KEY || "",
-  privateKey: process.env.IMAGEKIT_PRIVATE_KEY || "",
-  urlEndpoint: process.env.IMAGEKIT_URL_ENDPOINT || ""
+  publicKey: 'public_kgj5PULxw6pfjeO2IGwEVundBIQ=',
+  privateKey: 'private_n4IdSlg7DbXXn88rRAVqZhCgGVw=',
+  urlEndpoint: 'https://ik.imagekit.io/esdata1'
 })
 
 const imageKitUpload: any = async (req: any, res: Response) => {
