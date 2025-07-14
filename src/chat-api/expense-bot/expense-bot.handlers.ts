@@ -4,7 +4,7 @@ import { ExpenseModel } from "./expense-bot.model";
 import { OpenAI } from "openai";
 
 const openai = new OpenAI({
-  apiKey: "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",
+  apiKey: "",
 });
 
 export async function extractExpenseDataWithGPT(userMessage: string) {
