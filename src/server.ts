@@ -64,7 +64,8 @@ app.use('/api-docs/design-system', swaggerUi.serve, swaggerUi.setup(swaggerDocum
 app.use(cors({
   origin: [
     'http://localhost:5173',
-    'https://botify.life'
+    'https://botify.life',
+    'https://app.botify.life'
   ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS', 'HEAD']
