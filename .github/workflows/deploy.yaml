@@ -1,4 +1,4 @@
-name: Deploy Botify Node JS
+name: Deploy Botify Node JS App
 description: This workflow builds and deploys the Botify backend to Docker Hub and then deploys
 
 on:
