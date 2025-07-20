@@ -45,6 +45,9 @@ import isolateVmRoutes from './code-run/isolate-vm/isolate-vm.routes';
 // Organization routes
 import organizationRoutes from './organization-api/organization.routes';
 
+// Manage Credentials routes
+import manageCredentialsRouter from './manage-credentials/manage-credentials.routes';
+
 const port = 4001;
 
 // Express App Initialization
@@ -117,6 +120,8 @@ app.use('/v1/api', isolateVmRoutes);
 // Organization routes
 app.use('/v1/api/organization', organizationRoutes);
 
+// Manage Credentials
+app.use('/v1/api/manage-credentials', manageCredentialsRouter);
 
 // ===============
 // Utility Routes
