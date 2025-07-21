@@ -1,7 +1,9 @@
 import { Schema, model, Document } from 'mongoose';
-import { IsString, IsNotEmpty, IsOptional } from 'class-validator';
+import { v4 as uuidv4 } from 'uuid';
 
 export interface IManageCredential extends Document {
+  credentialId: string;
+  organizationId: string;
   name: string;
   type: string;
   value: string;
@@ -10,26 +12,10 @@ export interface IManageCredential extends Document {
   updatedAt: Date;
 }
 
-export class ManageCredentialDTO {
-  @IsString()
-  @IsNotEmpty()
-  name!: string;
-
-  @IsString()
-  @IsNotEmpty()
-  type!: string;
-
-  @IsString()
-  @IsNotEmpty()
-  value!: string;
-
-  @IsOptional()
-  @IsString()
-  description?: string;
-}
-
 const ManageCredentialSchema = new Schema<IManageCredential>({
-  name: { type: String, required: true, unique: true },
+  credentialId: { type: String, required: true, unique: true, default: uuidv4 },
+  organizationId: { type: String, required: true },
+  name: { type: String, required: true },
   type: { type: String, required: true },
   value: { type: String, required: true },
   description: { type: String },

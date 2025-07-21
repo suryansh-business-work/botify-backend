@@ -2,7 +2,7 @@
 import mongoose from 'mongoose';
 
 // ✅ Updated with specific DB name: "expense-llm"
-const MONGO_URI = 'mongodb+srv://suryanshbusinesswork:education54@sibera-box.ofemtir.mongodb.net/expense-llm?retryWrites=true&w=majority&appName=sibera-box';
+const MONGO_URI = 'mongodb+srv://suryanshbusinesswork:education54@sibera-box.ofemtir.mongodb.net/botify-life?retryWrites=true&w=majority&appName=sibera-box';
 
 export const connectDB = async (): Promise<void> => {
   try {

@@ -2,7 +2,6 @@ import { Schema, model } from 'mongoose';
 import { v4 as uuidv4 } from 'uuid';
 
 const organizationSchema = new Schema({
-  userId: { type: String, required: true },
   organizationId: { type: String, default: uuidv4, unique: true },
   organizationName: { type: String, required: true },
   organizationLogo: { type: String, default: '' },
@@ -19,8 +18,5 @@ const organizationSchema = new Schema({
   organizationRegistrationDetails: { type: Schema.Types.Mixed },
   isOrganizationVerified: { type: Boolean, default: false },
 }, { timestamps: true });
-
-// Index for faster lookups by userId
-organizationSchema.index({ userId: 1 });
 
 export const OrganizationModel = model('Organization', organizationSchema);

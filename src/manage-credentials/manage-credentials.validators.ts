@@ -2,6 +2,12 @@ import { IsString, IsNotEmpty, IsOptional } from 'class-validator';
 
 export class ManageCredentialDTO {
   @IsString()
+  credentialId?: string;
+
+  @IsString()
+  organizationId?: string;
+
+  @IsString()
   @IsNotEmpty()
   name!: string;
 

@@ -25,6 +25,9 @@ export class SignupDTO {
   @IsOptional()
   @IsString()
   role?: 'general' | 'dev' | 'admin'; 
+
+  @IsString()
+  organizationName!: string;
 }
 
 export class SigninDTO {

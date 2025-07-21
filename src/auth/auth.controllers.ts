@@ -1,7 +1,6 @@
 import { Request, Response } from 'express';
 import { validate } from 'class-validator';
 import {
-  SignupDTO,
   SigninDTO,
   ForgotPasswordStep1DTO,
   ForgotPasswordStep2DTO,
@@ -25,52 +24,9 @@ import dayjs from "dayjs";
 import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
 import { SubcriptionModel } from '../chat-api/subscription-api/subscription-usage.model';
+import { sanitizeUser } from '../utils/sanitize-user';
 dayjs.extend(utc);
 dayjs.extend(timezone);
-
-// Utility to sanitize user object (removes sensitive fields)
-const sanitizeUser = (user: any) => {
-  if (!user) return null;
-  const { password, __v, _id, ...rest } = user.toObject ? user.toObject() : user;
-  return rest; 
-};
-
-// --- Auth Controllers ---
-
-export const signup = async (req: Request, res: Response) => {
-  try {
-    const dto = Object.assign(new SignupDTO(), req.body);
-    const errors = await validate(dto);
-    if (errors.length) return errorResponse(res, errors, 'Validation failed');
-
-    const { firstName, lastName, email, password, confirmPassword, profileImage, role } = dto;
-    if (password !== confirmPassword)
-      return errorResponse(res, null, 'Passwords do not match');
-
-    const existing = await UserModel.findOne({ email });
-    if (existing)
-      return errorResponse(res, null, 'User already exists');
-
-    const user = new UserModel({
-      firstName,
-      lastName,
-      email,
-      password: await hashPassword(password),
-      isUserVerified: false,
-      profileImage: profileImage || 'https://ik.imagekit.io/esdata1/botify/botify-logo-1_j7vjRlSiwH.png',
-      role: role || "general", // <-- set role, default to general
-    });
-    await user.save();
-    const subcriptionModel = new SubcriptionModel({
-      userId: user?.userId,
-      tokenCount: 1000000, // Default token count
-    })
-    await subcriptionModel.save();
-    return successResponse(res, { user: sanitizeUser(user) }, 'User registered successfully');
-  } catch (err) {
-    return errorResponse(res, err, 'Signup failed');
-  }
-};
 
 export const signin = async (req: Request, res: Response) => {
   try {

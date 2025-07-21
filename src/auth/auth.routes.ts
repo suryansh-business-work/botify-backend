@@ -1,6 +1,7 @@
 import { Router } from "express";
-import { signup, signin, forgotPasswordStep1, forgotPasswordStep2, getUserInfo, updateProfile, updatePassword, sendVerificationOtp, verifyUserOtp, signupWithGoogle, signinWithGoogle } from "./auth.controllers";
+import { signin, forgotPasswordStep1, forgotPasswordStep2, getUserInfo, updateProfile, updatePassword, sendVerificationOtp, verifyUserOtp, signupWithGoogle, signinWithGoogle } from "./auth.controllers";
 import { authenticateJWT } from "./auth.middleware";
+import { signup } from "./controllers/signup.controllers";
 
 const router = Router();
 

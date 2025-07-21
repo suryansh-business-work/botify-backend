@@ -7,7 +7,9 @@ import {
   successResponse,
   errorResponse,
   noContentResponse,
+  successResponseArr,
 } from '../utils/response-object';
+import { UserOrganizationMappingModel } from '../user-organization-mapping/user-organization-mapping.model';
 
 // Helper function to handle validation
 const handleValidation = async (dto: any, res: Response) => {
@@ -22,12 +24,9 @@ const handleValidation = async (dto: any, res: Response) => {
 // Create organization
 export const createOrganization = async (req: Request, res: Response) => {
   try {
-    const userId = (req as any).userId;
     const dto = plainToClass(CreateOrganizationDTO, req.body);
-    
     if (!(await handleValidation(dto, res))) return;
-    
-    const organization = await service.createOrganization(userId, dto);
+    const organization = await service.createOrganization(dto);
     successResponse(res, organization, "Organization created successfully");
   } catch (err) {
     errorResponse(res, err, "Failed to create organization");
@@ -39,30 +38,12 @@ export const getOrganizationById = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const organization = await service.getOrganizationById(id);
-    
     if (!organization) {
       return noContentResponse(res, null, "Organization not found");
     }
-    
     successResponse(res, organization, "Organization retrieved successfully");
   } catch (err) {
     errorResponse(res, err, "Failed to get organization");
-  }
-};
-
-// Get organizations by user ID
-export const getOrganizationsByUserId = async (req: Request, res: Response) => {
-  try {
-    const userId = (req as any).userId;
-    const organizations = await service.getOrganizationsByUserId(userId);
-    
-    if (!organizations.length) {
-      return noContentResponse(res, [], "No organizations found");
-    }
-    
-    successResponse(res, organizations, "Organizations retrieved successfully");
-  } catch (err) {
-    errorResponse(res, err, "Failed to get organizations");
   }
 };
 
@@ -71,15 +52,11 @@ export const updateOrganization = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const dto = plainToClass(UpdateOrganizationDTO, req.body);
-    
     if (!(await handleValidation(dto, res))) return;
-    
     const organization = await service.updateOrganization(id, dto);
-    
     if (!organization) {
       return noContentResponse(res, null, "Organization not found");
     }
-    
     successResponse(res, organization, "Organization updated successfully");
   } catch (err) {
     errorResponse(res, err, "Failed to update organization");
@@ -89,15 +66,11 @@ export const updateOrganization = async (req: Request, res: Response) => {
 // Delete organization
 export const deleteOrganization = async (req: Request, res: Response) => {
   try {
-    const userId = (req as any).userId;
     const { id } = req.params;
-    
-    const organization = await service.deleteOrganization(id, userId);
-    
+    const organization = await service.deleteOrganization(id);
     if (!organization) {
-      return noContentResponse(res, null, "Organization not found or you don't have permission");
+      return noContentResponse(res, null, "Organization not found");
     }
-    
     successResponse(res, null, "Organization deleted successfully");
   } catch (err) {
     errorResponse(res, err, "Failed to delete organization");
@@ -107,15 +80,11 @@ export const deleteOrganization = async (req: Request, res: Response) => {
 // Regenerate API key
 export const regenerateApiKey = async (req: Request, res: Response) => {
   try {
-    const userId = (req as any).userId;
     const { id } = req.params;
-    
-    const organization = await service.regenerateApiKey(id, userId);
-    
+    const organization = await service.regenerateApiKey(id);
     if (!organization) {
-      return noContentResponse(res, null, "Organization not found or you don't have permission");
+      return noContentResponse(res, null, "Organization not found");
     }
-    
     successResponse(res, { organizationApiKey: organization.organizationApiKey }, "API key regenerated successfully");
   } catch (err) {
     errorResponse(res, err, "Failed to regenerate API key");
@@ -126,13 +95,44 @@ export const regenerateApiKey = async (req: Request, res: Response) => {
 export const getPublicOrganizations = async (_req: Request, res: Response) => {
   try {
     const organizations = await service.getPublicOrganizations();
-    
     if (!organizations.length) {
       return noContentResponse(res, [], "No public organizations found");
     }
-    
     successResponse(res, organizations, "Public organizations retrieved successfully");
   } catch (err) {
     errorResponse(res, err, "Failed to get public organizations");
+  }
+};
+
+// Get organizations for a specific user
+export const getOrganizationsByUser = async (req: Request, res: Response) => {
+  try {
+    const userId = (req as any).userId;
+    if (!userId) {
+      return errorResponse(res, null, "userId is required in request body");
+    }
+
+    // Aggregate to join mappings with organizations
+    const organizations = await UserOrganizationMappingModel.aggregate([
+      { $match: { userId } },
+      {
+        $lookup: {
+          from: 'organizations', // collection name in MongoDB (should match your OrganizationModel)
+          localField: 'organizationId',
+          foreignField: 'organizationId',
+          as: 'organization'
+        }
+      },
+      { $unwind: '$organization' },
+      { $replaceRoot: { newRoot: '$organization' } }
+    ]);
+
+    if (!organizations.length) {
+      return noContentResponse(res, [], "No organizations found for this user");
+    }
+    return successResponseArr(res, organizations, {}, "Organizations fetched successfully");
+  } catch (err) {
+    console.error(err);
+    return errorResponse(res, err, "Failed to fetch organizations for user");
   }
 };
