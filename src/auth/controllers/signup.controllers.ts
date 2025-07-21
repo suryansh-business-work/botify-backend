@@ -54,12 +54,23 @@ export const signup = async (req: Request, res: any) => {
     await organization.save({ session });
 
     // Map user to organization
-    await UserOrganizationMappingModel.create([
-      {
-        userId: user.userId,
-        organizationId: organization.organizationId,
-      }
-    ], { session });
+    await UserOrganizationMappingModel.updateMany(
+      { userId: user.userId },
+      { $set: { selected: false } },
+      { session }
+    );
+
+    // Then create new mapping with selected: true
+    await UserOrganizationMappingModel.create(
+      [
+        {
+          userId: user.userId,
+          organizationId: organization.organizationId,
+          selected: true
+        }
+      ],
+      { session }
+    );
 
     // Create subscription
     const subcriptionModel = new SubcriptionModel({

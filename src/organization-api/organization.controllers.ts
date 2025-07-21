@@ -23,12 +23,51 @@ const handleValidation = async (dto: any, res: Response) => {
 
 // Create organization
 export const createOrganization = async (req: Request, res: Response) => {
+  const session = await UserOrganizationMappingModel.startSession();
+  session.startTransaction();
   try {
     const dto = plainToClass(CreateOrganizationDTO, req.body);
-    if (!(await handleValidation(dto, res))) return;
+    if (!(await handleValidation(dto, res))) {
+      await session.abortTransaction();
+      session.endSession();
+      return;
+    }
     const organization = await service.createOrganization(dto);
+
+    // Get userId from req.body or req.user (adjust as per your auth)
+    const userId = (req as any).userId;
+    if (!userId) {
+      await session.abortTransaction();
+      session.endSession();
+      return errorResponse(res, null, "userId is required in request body");
+    }
+
+    // Set all previous mappings for this user to selected: false
+    await UserOrganizationMappingModel.updateMany(
+      { userId },
+      { $set: { selected: false } },
+      { session }
+    );
+
+    // Create new mapping with selected: true
+    await UserOrganizationMappingModel.create(
+      [
+        {
+          userId,
+          organizationId: organization.organizationId,
+          selected: true
+        }
+      ],
+      { session }
+    );
+
+    await session.commitTransaction();
+    session.endSession();
+
     successResponse(res, organization, "Organization created successfully");
   } catch (err) {
+    await session.abortTransaction();
+    session.endSession();
     errorResponse(res, err, "Failed to create organization");
   }
 };
@@ -112,18 +151,23 @@ export const getOrganizationsByUser = async (req: Request, res: Response) => {
       return errorResponse(res, null, "userId is required in request body");
     }
 
-    // Aggregate to join mappings with organizations
+    // Aggregate to join mappings with organizations and include 'selected'
     const organizations = await UserOrganizationMappingModel.aggregate([
       { $match: { userId } },
       {
         $lookup: {
-          from: 'organizations', // collection name in MongoDB (should match your OrganizationModel)
+          from: 'organizations',
           localField: 'organizationId',
           foreignField: 'organizationId',
           as: 'organization'
         }
       },
       { $unwind: '$organization' },
+      {
+        $addFields: {
+          'organization.selected': '$selected'
+        }
+      },
       { $replaceRoot: { newRoot: '$organization' } }
     ]);
 
@@ -134,5 +178,33 @@ export const getOrganizationsByUser = async (req: Request, res: Response) => {
   } catch (err) {
     console.error(err);
     return errorResponse(res, err, "Failed to fetch organizations for user");
+  }
+};
+
+// Update selected organization
+export const updateSelectedOrganization = async (req: Request, res: Response) => {
+  const userId = (req as any).userId;
+  try {
+    const { organizationId } = req.body;
+    if (!userId || !organizationId) {
+      return errorResponse(res, null, 'userId and organizationId are required');
+    }
+    // Set all mappings for this user to selected: false
+    await UserOrganizationMappingModel.updateMany(
+      { userId },
+      { $set: { selected: false } }
+    );
+    // Set selected: true for the specified mapping
+    const result = await UserOrganizationMappingModel.findOneAndUpdate(
+      { userId, organizationId },
+      { $set: { selected: true } },
+      { new: true }
+    );
+    if (!result) {
+      return errorResponse(res, null, 'Mapping not found');
+    }
+    return successResponse(res, result, 'Selected organization updated successfully');
+  } catch (err) {
+    return errorResponse(res, err, 'Failed to update selected organization');
   }
 };

@@ -17,7 +17,7 @@ declare global {
 export const createCredential = async (req: Request, res: Response) => {
   try {
     // Extract orgId from JWT (assume req.user is set by auth middleware)
-    const organizationId = req.user?.organizationId || req.user?.orgId || req.user?.id;
+    const organizationId = req.user?.organizationId;
     if (!organizationId) {
       return errorResponse(res, null, 'Organization ID not found in token');
     }
@@ -41,7 +41,7 @@ export const createCredential = async (req: Request, res: Response) => {
 
 export const getCredentials = async (req: Request, res: Response) => {
   try {
-    const organizationId = req.user?.organizationId || req.user?.orgId || req.user?.id;
+    const organizationId = req.user?.organizationId;
     if (!organizationId) {
       return errorResponse(res, null, 'Organization ID not found in token');
     }
@@ -57,7 +57,7 @@ export const getCredentials = async (req: Request, res: Response) => {
 
 export const getCredentialById = async (req: Request, res: Response) => {
   try {
-    const organizationId = req.user?.organizationId || req.user?.orgId || req.user?.id;
+    const organizationId = req.user?.organizationId;
     if (!organizationId) {
       return errorResponse(res, null, 'Organization ID not found in token');
     }
@@ -73,7 +73,7 @@ export const getCredentialById = async (req: Request, res: Response) => {
 
 export const updateCredential = async (req: Request, res: Response) => {
   try {
-    const organizationId = req.user?.organizationId || req.user?.orgId || req.user?.id;
+    const organizationId = req.user?.organizationId;
     if (!organizationId) {
       return errorResponse(res, null, 'Organization ID not found in token');
     }
@@ -98,7 +98,7 @@ export const updateCredential = async (req: Request, res: Response) => {
 
 export const deleteCredential = async (req: Request, res: Response) => {
   try {
-    const organizationId = req.user?.organizationId || req.user?.orgId || req.user?.id;
+    const organizationId = req.user?.organizationId;
     if (!organizationId) {
       return errorResponse(res, null, 'Organization ID not found in token');
     }
