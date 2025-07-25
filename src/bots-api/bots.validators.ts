@@ -1,5 +1,4 @@
 import { IsString, IsArray, IsOptional, IsBoolean, ArrayNotEmpty, Validate, ValidatorConstraint, ValidatorConstraintInterface, ValidationArguments, ValidateNested, IsObject } from 'class-validator';
-import { Type } from 'class-transformer';
 
 @ValidatorConstraint({ name: 'isEmailOrPhone', async: false })
 class IsEmailOrPhoneConstraint implements ValidatorConstraintInterface {

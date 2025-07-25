@@ -1,117 +1,31 @@
-import { BotModel, UserBotMappingModel } from './bots.models';
-import mongoose from 'mongoose';
+import { BotModel } from './bots.models';
 
-export const createBot = async (userId: string, data: any) => {
-  const session = await mongoose.startSession();
-  session.startTransaction();
-  try {
-    // 1. Create the bot
-    const bot = await BotModel.create([data], { session });
-
-    // 2. Create the user-bot mapping
-    await UserBotMappingModel.create([{
-      userId,
-      botId: bot[0].botId,
-      ownerId: userId,
-      canEdit: true,
-      canDelete: true,
-    }], { session });
-    await session.commitTransaction();
-    return bot[0];
-  } catch (err) {
-    await session.abortTransaction();
-    throw err;
-  } finally {
-    session.endSession();
-  }
+// Create a bot (no UserBotMappingModel, no session)
+export const createBot = async (data: any) => {
+  return BotModel.create(data);
 };
 
+// Update a bot
 export const updateBot = async (botId: string, data: any) => {
-  return BotModel.findOneAndUpdate({ botId }, { $set: data }, { new: true });
+  return BotModel.findOneAndUpdate({ botId, organizationId: data.organizationId }, { $set: data }, { new: true });
 };
 
-export const deleteBot = async (botId: string, userId: string) => {
-  const session = await mongoose.startSession();
-  session.startTransaction();
-  try {
-    // Only owner or user with canDelete can delete
-    const mapping = await UserBotMappingModel.findOne({ botId, userId });
-    if (!mapping || (!mapping.canDelete && String(mapping.ownerId) !== String(userId))) {
-      throw new Error('Not authorized to delete this bot');
-    }
-    await BotModel.deleteOne({ botId }, { session });
-    await UserBotMappingModel.deleteMany({ botId }, { session });
-    await session.commitTransaction();
-    return true;
-  } catch (err) {
-    await session.abortTransaction();
-    throw err;
-  } finally {
-    session.endSession();
-  }
+// Delete a bot (no UserBotMappingModel, no session)
+export const deleteBot = async (botId: string, organizationId: string) => {
+  return BotModel.deleteOne({ botId, organizationId });
 };
 
-export const listBotsForUser = async (userId: string) => {
-  try {
-    const bots = await UserBotMappingModel.aggregate([
-      { $match: { userId } },
-      {
-        $lookup: {
-          from: 'bots',
-          localField: 'botId',
-          foreignField: 'botId',
-          as: 'bot',
-        },
-      },
-      { $unwind: '$bot' },
-      {
-        $project: {
-          _id: 0,
-          botId: 1,
-          ownerId: 1,
-          canEdit: 1,
-          canDelete: 1,
-          sharedVia: 1,
-          sharedIdentifier: 1,
-          bot: 1,
-        },
-      },
-    ]);
-    console.log('Bots found:', bots.length);
-    return bots;
-  } catch (err) {
-    console.error('Aggregation error:', err);
-    throw err;
-  }
+// List all bots for a user and organization
+export const listBotsForUser = async (organizationId: string) => {
+  return BotModel.find({ organizationId });
 };
 
-export const listBotsForUserByCategory = async (userId: string) => {
-  return UserBotMappingModel.aggregate([
-    { $match: { userId } },
-    {
-      $lookup: {
-        from: 'bots',
-        localField: 'botId',
-        foreignField: 'botId',
-        as: 'bot',
-      },
-    },
-    { $unwind: '$bot' },
-    {
-      $project: {
-        _id: 0,
-        botId: 1,
-        ownerId: 1,
-        canEdit: 1,
-        canDelete: 1,
-        sharedVia: 1,
-        sharedIdentifier: 1,
-        bot: 1,
-      },
-    },
-  ]);
+// List all bots by category for a user and organization
+export const listBotsByCategory = async (organizationId: string) => {
+  return BotModel.find({ organizationId });
 };
 
-export const getBotById = async (botId: string) => {
-  return BotModel.findOne({ botId });
+// Get a bot by ID for a user and organization
+export const getBotById = async (botId: string, organizationId: string) => {
+  return BotModel.findOne({ botId, organizationId });
 };

@@ -7,7 +7,7 @@ let token: string;
 let credentialId: string;
 
 beforeAll(async () => {
-  token = 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI5MmVlYmYwYS1hMDUzLTRjMWUtYjM5Ny1hYzE5NTljYTYzZTAiLCJvcmdhbml6YXRpb25JZCI6IjBhZjc4NmY0LWZhZTAtNGQ1MS1iNDA5LTFkNjFkMDJmMDhhNyIsImlhdCI6MTc1MzQ1NjI0NH0.rvNEnIfEaVx5Ya8ccnWLLTsDj9WTEAoj6QKX9n9nPVw';
+  token = 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJhNDAxMzc1Zi1mMjkyLTQ1MzUtYTQ5Yy0xMjA3N2JjZjE2NTYiLCJvcmdhbml6YXRpb25JZCI6ImE5ZjNiZTBlLWVjYTctNGU0OS04ZTA5LTQ4YTkwMTc1YTk3MCIsImlhdCI6MTc1MzQ2MTg0Mn0.iG8c1K5sr9R1pa28SVfKl_xN5tZvGAC8LxAi8GcOAeM';
 });
 
 describe('Manage Credentials API', () => {
