@@ -1,4 +1,4 @@
-name: Deploy Botify Backend Node JS App
+name: Deploy Botify Backend Node JS App with websocket
 description: This workflow builds and deploys the Botify backend to Docker Hub and then deploys
 
 on:
@@ -47,4 +47,4 @@ jobs:
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/botify-backend:latest
             docker stop botify-backend || true
             docker rm botify-backend || true
-            docker run -d --name botify-backend -p 4001:4001 --restart=always ${{ secrets.DOCKERHUB_USERNAME }}/botify-backend:latest
+            docker run -d --name botify-backend -p 4001:4001 -p 4002:4002 --restart=always ${{ secrets.DOCKERHUB_USERNAME }}/botify-backend:latest
