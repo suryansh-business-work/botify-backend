@@ -3,7 +3,7 @@ import mongoose, { Schema, Document, model } from 'mongoose';
 export interface IUserOrganizationMapping extends Document {
   userId: string;
   organizationId: string;
-  selected: boolean; // Added field
+  selected: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -11,7 +11,7 @@ export interface IUserOrganizationMapping extends Document {
 const UserOrganizationMappingSchema = new Schema<IUserOrganizationMapping>({
   userId: { type: String, required: true, index: true },
   organizationId: { type: String, required: true, index: true },
-  selected: { type: Boolean, default: false }, // Added field
+  selected: { type: Boolean, default: false, required: true },
 }, {
   timestamps: true,
 });

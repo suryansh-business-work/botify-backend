@@ -1,6 +1,6 @@
 export enum statusCode {
   SUCCESS = 200,
-  NO_CONTENT = 401,
+  NO_CONTENT = 200,
   ERROR = 500
 }
 

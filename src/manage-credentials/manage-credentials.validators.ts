@@ -23,3 +23,28 @@ export class ManageCredentialDTO {
   @IsString()
   description?: string;
 }
+
+export class UpdateManageCredentialDTO {
+  @IsOptional()
+  @IsString()
+  credentialId?: string;
+
+  @IsString()
+  organizationId?: string;
+
+  @IsString()
+  @IsNotEmpty()
+  name!: string;
+
+  @IsString()
+  @IsNotEmpty()
+  type!: string;
+
+  @IsString()
+  @IsNotEmpty()
+  value!: string;
+
+  @IsOptional()
+  @IsString()
+  description?: string;
+}

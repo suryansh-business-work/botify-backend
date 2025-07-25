@@ -25,6 +25,7 @@ import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
 import { SubcriptionModel } from '../chat-api/subscription-api/subscription-usage.model';
 import { sanitizeUser } from '../utils/sanitize-user';
+import { UserOrganizationMappingModel } from '../user-organization-mapping/user-organization-mapping.model';
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
@@ -38,7 +39,6 @@ export const signin = async (req: Request, res: Response) => {
     const user = await UserModel.findOne({ email: identifier });
     if (!user) return errorResponse(res, null, 'Invalid credentials');
 
-    // If user has no password, warn to login with Google
     if (!user.password) {
       return errorResponse(res, null, "Kindly login with Google. You do not have any password with your account.");
     }
@@ -46,7 +46,13 @@ export const signin = async (req: Request, res: Response) => {
     if (!(await comparePasswords(password, user.password)))
       return errorResponse(res, null, 'Invalid credentials');
 
-    const token = generateToken(user.userId);
+    const mapping = await UserOrganizationMappingModel.findOne({ userId: user.userId, selected: true });
+    const organizationId = mapping ? mapping.organizationId : undefined;
+    console.log("Organization ID from mapping:", organizationId);
+    if (!organizationId) {
+      return errorResponse(res, null, 'No organization selected for this user. Please contact support or select an organization.');
+    }
+    const token = generateToken(user.userId, organizationId);
     return successResponse(res, {
       token,
       user: sanitizeUser(user),
@@ -262,7 +268,7 @@ export const signupWithGoogle = async (req: Request, res: Response) => {
     })
     await subcriptionModel.save();
 
-    const token = generateToken(user.userId);
+    const token = generateToken(user.userId, '');
     return successResponse(res, { token, user: sanitizeUser(user) }, "Signup successful with Google");
   } catch (err) {
     return errorResponse(res, err, "Google signup failed");
@@ -288,7 +294,7 @@ export const signinWithGoogle = async (req: Request, res: Response) => {
       return errorResponse(res, null, "Kindly login with email and password. You do not have a Google account linked.");
     }
 
-    const token = generateToken(user.userId);
+    const token = generateToken(user.userId, '');
     return successResponse(res, { token, user: sanitizeUser(user) }, "Login successful with Google");
   } catch (err) {
     return errorResponse(res, err, "Google signin failed");
