@@ -1,9 +1,15 @@
 import { Request, Response } from 'express';
-import { ManageCredential } from './manage-credentials.model';
 import { v4 as uuidv4 } from 'uuid';
 import { validate } from 'class-validator';
 import { successResponse, successResponseArr, errorResponse, noContentResponse } from '../utils/response-object';
 import { ManageCredentialDTO, UpdateManageCredentialDTO } from './manage-credentials.validators';
+import {
+  createCredentialService,
+  getCredentialsService,
+  getCredentialByIdService,
+  updateCredentialService,
+  deleteCredentialService,
+} from './manage-credentials.services';
 
 export const createCredential = async (req: Request, res: Response) => {
   try {
@@ -15,11 +21,7 @@ export const createCredential = async (req: Request, res: Response) => {
     if (errors.length > 0) {
       return errorResponse(res, errors, 'Validation failed');
     }
-    const credential = await ManageCredential.create({
-      ...req.body,
-      credentialId: dto.credentialId,
-      organizationId: dto.organizationId,
-    });
+    const credential = await createCredentialService(dto);
     return successResponse(res, credential, 'Credential created successfully');
   } catch (error) {
     return errorResponse(res, error, 'Failed to create credential');
@@ -29,7 +31,7 @@ export const createCredential = async (req: Request, res: Response) => {
 export const getCredentials = async (req: Request, res: Response) => {
   try {
     const organizationId = (req as any).organizationId;
-    const credentials = await ManageCredential.find({ organizationId });
+    const credentials = await getCredentialsService(organizationId);
     if (!credentials || credentials.length === 0) {
       return noContentResponse(res, [], 'No credentials found');
     }
@@ -42,7 +44,7 @@ export const getCredentials = async (req: Request, res: Response) => {
 export const getCredentialById = async (req: Request, res: Response) => {
   try {
     const organizationId = (req as any).organizationId;
-    const credential = await ManageCredential.findOne({ credentialId: req.params.id, organizationId });
+    const credential = await getCredentialByIdService(req.params.credentialId, organizationId);
     if (!credential) {
       return noContentResponse(res, null, 'Credential not found');
     }
@@ -61,10 +63,10 @@ export const updateCredential = async (req: Request, res: Response) => {
     if (errors.length > 0) {
       return errorResponse(res, errors, 'Validation failed');
     }
-    const credential = await ManageCredential.findOneAndUpdate(
-      { credentialId: req.params.credentialId, organizationId },
-      req.body,
-      { new: true }
+    const credential = await updateCredentialService(
+      req.params.credentialId,
+      organizationId,
+      req.body
     );
     if (!credential) {
       return noContentResponse(res, null, 'Credential not found');
@@ -78,7 +80,7 @@ export const updateCredential = async (req: Request, res: Response) => {
 export const deleteCredential = async (req: Request, res: Response) => {
   try {
     const organizationId = (req as any).organizationId;
-    const credential = await ManageCredential.findOneAndDelete({ credentialId: req.params.credentialId, organizationId });
+    const credential = await deleteCredentialService(req.params.credentialId, organizationId);
     if (!credential) {
       return noContentResponse(res, null, 'Credential not found');
     }
