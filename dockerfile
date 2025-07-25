@@ -23,8 +23,10 @@ RUN npm install
 # Copy the rest of the code
 COPY . .
 
-# Expose your app port (change if needed)
+
+# Expose app and websocket ports
 EXPOSE 4001
+EXPOSE 4002
 
 # Build on every container start, then run the app
 CMD npm run build && npm run start

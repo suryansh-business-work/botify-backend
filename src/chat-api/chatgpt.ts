@@ -7,7 +7,7 @@ const router = Router();
 
 dotenv.config();
 
-const OPENAI_API_KEY = process.env.OPENAI_API_KEY || "";
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY || "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";
 const openai = new OpenAI({ apiKey: OPENAI_API_KEY });
 
 /**

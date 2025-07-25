@@ -147,7 +147,7 @@ const startServer = async () => {
 
   app.listen(port, () => {
     console.log(`🚀 Server is running at http://localhost:${port}`);
-    // startWebSocketServer(); // Start WebSocket server only after DB is connected
+    startWebSocketServer(); // Start WebSocket server only after DB is connected
   });
 };
 

@@ -10,7 +10,7 @@ let wss: WebSocketServer | null = null;
 
 export function startWebSocketServer() {
   if (!wss) {
-    wss = new WebSocketServer({ port: 8081 });
+    wss = new WebSocketServer({ port: 4002 });
 
     wss.on("connection", (ws) => {
       ws.on("message", async (message) => {
@@ -88,6 +88,6 @@ export function startWebSocketServer() {
       });
     });
 
-    console.log("WebSocket chat server running on ws://localhost:8080");
+    console.log("WebSocket chat server running on ws://localhost:4002");
   }
 }
