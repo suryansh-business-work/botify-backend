@@ -50,7 +50,7 @@ export const signin = async (req: Request, res: Response) => {
     const organizationId = mapping ? mapping.organizationId : undefined;
     console.log("Organization ID from mapping:", organizationId);
     if (!organizationId) {
-      return errorResponse(res, null, 'No organization selected for this user. Please contact support or select an organization.');
+      return errorResponse(res, null, 'No organization selected for this user. Please contact support');
     }
     const token = generateToken(user.userId, organizationId);
     return successResponse(res, {
@@ -298,5 +298,32 @@ export const signinWithGoogle = async (req: Request, res: Response) => {
     return successResponse(res, { token, user: sanitizeUser(user) }, "Login successful with Google");
   } catch (err) {
     return errorResponse(res, err, "Google signin failed");
+  }
+};
+
+export const authTokenRefreshInCaseOfOrgChange = async (req: Request, res: Response) => {
+  try {
+    const userId = (req as any).userId;
+    if (!userId) {
+      return errorResponse(res, null, 'User ID not found in request');
+    }
+    // Find the selected organization mapping for this user
+    const mapping = await UserOrganizationMappingModel.findOne({ userId, selected: true });
+    const organizationId = mapping ? mapping.organizationId : undefined;
+    if (!organizationId) {
+      return errorResponse(res, null, 'No organization selected for this user. Please contact support');
+    }
+    // Optionally, fetch user for response
+    const user = await UserModel.findOne({ userId });
+    if (!user) {
+      return errorResponse(res, null, 'User not found');
+    }
+    const token = generateToken(userId, organizationId);
+    return successResponse(res, {
+      token,
+      user: sanitizeUser(user),
+    }, 'Token refreshed successfully');
+  } catch (err) {
+    return errorResponse(res, err, 'Failed to refresh token');
   }
 };

@@ -1,5 +1,6 @@
 import { Router } from "express";
-import { signin, forgotPasswordStep1, forgotPasswordStep2, getUserInfo, updateProfile, updatePassword, sendVerificationOtp, verifyUserOtp, signupWithGoogle, signinWithGoogle } from "./auth.controllers";
+import { signin, forgotPasswordStep1, forgotPasswordStep2, getUserInfo, updateProfile, updatePassword, sendVerificationOtp, verifyUserOtp, signupWithGoogle, signinWithGoogle, authTokenRefreshInCaseOfOrgChange } from "./auth.controllers";
+
 import { authenticateJWT } from "./auth.middleware";
 import { signup } from "./controllers/signup.controllers";
 
@@ -27,5 +28,6 @@ router.post("/verify-otp", authenticateJWT, verifyUserOtp);
 // Signup and Signin with Google
 router.post("/signup-google", signupWithGoogle);
 router.post("/signin-google", signinWithGoogle);
+router.post("/refresh-token-on-org-change", authenticateJWT, authTokenRefreshInCaseOfOrgChange);
 
 export default router;
