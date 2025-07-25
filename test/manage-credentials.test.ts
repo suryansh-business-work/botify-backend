@@ -1,7 +1,6 @@
 import request from 'supertest';
 import { ManageCredential } from '../src/manage-credentials/manage-credentials.model';
 import app from '../src/server';
-import { disconnectDB } from '../db/db';
 import mongoose from 'mongoose';
 
 let token: string;
@@ -69,6 +68,5 @@ describe('Manage Credentials API', () => {
 });
 
 afterAll(async () => {
-  await disconnectDB();
   await mongoose.connection.close();
 });
