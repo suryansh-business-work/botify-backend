@@ -1,4 +1,4 @@
-import { IsString, IsArray, IsOptional, IsBoolean, ValidateNested, ArrayMinSize } from "class-validator";
+import { IsString, IsArray, IsOptional, IsBoolean, ValidateNested } from "class-validator";
 import { Type } from "class-transformer";
 
 export class ToolParamDTO {

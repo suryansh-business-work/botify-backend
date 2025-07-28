@@ -24,8 +24,10 @@ const handleValidation = async (dto: any, res: Response) => {
 
 export const createMcpServer = async (req: Request, res: Response) => {
   try {
+    const organizationId = (req as any).organizationId;
     const dto = Object.assign(new CreateMcpServerDTO(), req.body);
     if (!(await handleValidation(dto, res))) return;
+    dto.organizationId = organizationId;
     const server = await service.createMcpServer(dto);
     successResponse(res, server, "MCP Server created successfully");
   } catch (err) {
@@ -47,8 +49,8 @@ export const updateMcpServer = async (req: Request, res: Response) => {
 
 export const deleteMcpServer = async (req: any, res: Response) => {
   try {
-    const userId = req?.userId;
-    const deleted = await service.deleteMcpServer(req.params.id, userId);
+    const organizationId = req?.organizationId;
+    const deleted = await service.deleteMcpServer(req.params.id, organizationId);
     if (!deleted) return noContentResponse(res, null, "MCP Server not found");
     successResponse(res, deleted, "MCP Server deleted successfully");
   } catch (err) {
@@ -114,10 +116,9 @@ export const updateMcpServerPricing = async (req: Request, res: Response) => {
 
 export const listMcpServersByUser = async (req: any, res: any) => {
   try {
-    // userId should be set by authenticateJWT middleware, e.g. req.user.userId
-    const userId = req?.userId;
-    if (!userId) return errorResponse(res, null, "Unauthorized");
-    const servers = await service.listMcpServersByUser(userId);
+    const organizationId = req?.organizationId;
+    if (!organizationId) return errorResponse(res, null, "Unauthorized");
+    const servers = await service.listMcpServersByUser(organizationId);
     if (!servers || !servers.length) return noContentResponse(res, [], "No MCP Servers found");
     successResponse(res, servers, "MCP Servers fetched successfully");
   } catch (err) {

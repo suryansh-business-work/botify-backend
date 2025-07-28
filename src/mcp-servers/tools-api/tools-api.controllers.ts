@@ -22,7 +22,6 @@ export const createTool = async (req: any, res: Response) => {
   try {
     // Add the authenticated user ID to the DTO
     req.body.createdBy = req.userId;
-    
     const dto = plainToClass(CreateToolDTO, req.body);
     if (!(await handleValidation(dto, res))) return;
     

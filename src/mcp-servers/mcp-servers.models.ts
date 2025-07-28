@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 const mcpServerSchema = new Schema({
   mcpServerId: { type: String, default: uuidv4, unique: true },
   mcpServerCreatorId: { type: String, required: true },
-  userId: { type: String, required: true },
+  organizationId: { type: String, required: true },
   mcpServerName: { type: String, required: true },
 }, { timestamps: true });
 

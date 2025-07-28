@@ -2,8 +2,7 @@ import { IsString, IsArray, IsOptional, IsNumber } from "class-validator";
 
 export class CreateMcpServerDTO {
   @IsString() mcpServerCreatorId!: string;
-  @IsString() userId!: string;
-  @IsString() mcpServerName!: string;
+  @IsString() organizationId!: string;
 }
 
 export class UpdateMcpServerDTO {

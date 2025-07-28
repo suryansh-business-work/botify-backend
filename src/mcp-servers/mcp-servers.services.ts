@@ -4,8 +4,8 @@ import type { CreateMcpServerDTO, UpdateMcpServerDTO, CreateMcpServerDetailsDTO,
 export const createMcpServer = async (dto: CreateMcpServerDTO) => McpServerModel.create(dto);
 export const updateMcpServer = async (id: string, dto: UpdateMcpServerDTO) =>
   McpServerModel.findOneAndUpdate({ mcpServerId: id }, dto, { new: true });
-export const deleteMcpServer = async (id: string, userId: string) =>
-  McpServerModel.findOneAndDelete({ mcpServerId: id, userId });
+export const deleteMcpServer = async (id: string, organizationId: string) =>
+  McpServerModel.findOneAndDelete({ mcpServerId: id, organizationId });
 
 export const createMcpServerDetails = async (dto: CreateMcpServerDetailsDTO) => McpServerDetailsModel.create(dto);
 export const updateMcpServerDetails = async (id: string, dto: UpdateMcpServerDetailsDTO) =>
@@ -39,9 +39,9 @@ export const getMcpServerDetails = async (id: string) => {
   ]);
 };
 
-export const listMcpServersByUser = async (userId: string) => {
+export const listMcpServersByUser = async (organizationId: string) => {
   return McpServerModel.aggregate([
-    { $match: { userId } },
+    { $match: { organizationId } },
     {
       $lookup: {
         from: "mcpserverdetails",
