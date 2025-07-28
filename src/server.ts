@@ -85,6 +85,9 @@ app.use(
   })
 );
 
+// Serve static files from the "static" folder (for embed/chat widget, etc.)
+app.use('/static', express.static(path.join(__dirname, '../static')));
+
 // ===================
 // API Route Handlers
 // ===================
