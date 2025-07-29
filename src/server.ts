@@ -24,6 +24,7 @@ import childBotSettingRoutes from './chat-api/chat-settings-api/bot.settings.rou
 import childBotLabPromptRoutes from './chat-api/chat-lab-apis/prompt/prompt.routes';
 import { startWebSocketServer } from './chat-api/chat.ws';
 import getChatGptResponseRoutes from './chat-api/chatgpt';
+import chatSseRoutes from './chat-api/chat.sse'; // <-- Add this import
 
 // MCP Servers APIs
 import mcpServersRoutes from './mcp-servers/mcp-servers.routes';
@@ -126,6 +127,9 @@ app.use('/v1/api/organization', organizationRoutes);
 // Manage Credentials
 app.use('/v1/api/manage-credentials', manageCredentialsRouter);
 
+// Chat SSE API
+app.use('/chat-sse', chatSseRoutes);
+
 // ===============
 // Utility Routes
 // ===============
@@ -150,7 +154,7 @@ const startServer = async () => {
 
   app.listen(port, () => {
     console.log(`🚀 Server is running at http://localhost:${port}`);
-    startWebSocketServer(); // Start WebSocket server only after DB is connected
+    // startWebSocketServer(); // Start WebSocket server only after DB is connected
   });
 };
 
