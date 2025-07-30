@@ -7,8 +7,7 @@ const router = Router();
 
 dotenv.config();
 
-// const OPENAI_API_KEY = process.env.OPENAI_API_KEY || "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";
-const openai = new OpenAI({ apiKey: "" });
+const openai = new OpenAI({  });
 
 /**
  * Calls OpenAI ChatGPT and returns the response as a string.

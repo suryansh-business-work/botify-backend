@@ -22,7 +22,7 @@ import childBotsRoutes from './bots-api/child-bots/childbot.routes';
 import botsRoutes from './bots-api/bots.routes';
 import childBotSettingRoutes from './chat-api/chat-settings-api/bot.settings.routes';
 import childBotLabPromptRoutes from './chat-api/chat-lab-apis/prompt/prompt.routes';
-import { startWebSocketServer } from './chat-api/chat.ws';
+// import { startWebSocketServer } from './chat-api/chat.ws';
 import getChatGptResponseRoutes from './chat-api/chatgpt';
 import chatSseRoutes from './chat-api/chat.sse'; // <-- Add this import
 
@@ -69,7 +69,8 @@ app.use(cors({
   origin: [
     'http://localhost:5173',
     'https://botify.life',
-    'https://app.botify.life'
+    'https://app.botify.life',
+    'http://localhost:4322'
   ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS', 'HEAD']

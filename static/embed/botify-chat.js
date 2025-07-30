@@ -56,124 +56,109 @@
       <html>
       <head>
         <style>
-          body {
+          * {
+            box-sizing: border-box;
             margin: 0;
-            font-family: 'Segoe UI', Arial, sans-serif;
-            background: transparent;
+            padding: 0;
           }
-          #botify-chat-widget {
-            width: 100%;
-            height: 100%;
-            background: #fff;
-            border-radius: 16px 16px 0 0;
-            box-shadow: 0 4px 24px rgba(0,0,0,0.18);
+          body {
+            font-family: Arial, sans-serif;
+            background: #f4f4f9;
             display: flex;
             flex-direction: column;
-            overflow: hidden;
+            height: 100%;
+          }
+          #botify-chat-widget {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            padding: 16px;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.18);
           }
           #botify-chat-header {
-            background: #2d6cdf;
-            color: #fff;
-            padding: 14px 16px;
-            font-size: 18px;
-            font-weight: 600;
             display: flex;
-            align-items: center;
             justify-content: space-between;
-            cursor: pointer;
-            position: relative;
+            align-items: center;
+            margin-bottom: 12px;
           }
           #botify-chat-header-left {
             display: flex;
             align-items: center;
-            gap: 8px;
+            font-weight: bold;
+            color: #333;
           }
-          #botify-chat-question {
-            background: none;
-            border: none;
-            color: #fff;
-            font-size: 20px;
-            cursor: pointer;
+          #botify-chat-header-left svg {
             margin-right: 8px;
-            margin-left: 0;
-            padding: 0 4px;
-            display: flex;
-            align-items: center;
           }
           #botify-chat-close {
             background: none;
             border: none;
-            color: #fff;
-            font-size: 20px;
+            color: #333;
+            font-size: 24px;
             cursor: pointer;
-            margin-left: 8px;
           }
           #botify-chat-body {
             flex: 1;
-            padding: 16px;
-            background: #f7f9fb;
             overflow-y: auto;
-            max-height: 350px;
-            min-height: 180px;
-          }
-          .botify-msg {
             margin-bottom: 12px;
-            display: flex;
-            flex-direction: column;
-          }
-          .botify-msg-user {
-            align-items: flex-end;
-          }
-          .botify-msg-bot {
-            align-items: flex-start;
-          }
-          .botify-bubble {
-            display: inline-block;
-            padding: 10px 14px;
-            border-radius: 16px;
-            max-width: 80%;
-            font-size: 15px;
-            line-height: 1.5;
-            margin-bottom: 2px;
-          }
-          .botify-bubble-user {
-            background: #2d6cdf;
-            color: #fff;
-            border-bottom-right-radius: 4px;
-          }
-          .botify-bubble-bot {
-            background: #e6eaf1;
-            color: #222;
-            border-bottom-left-radius: 4px;
+            padding-right: 8px;
           }
           #botify-chat-input-area {
             display: flex;
-            border-top: 1px solid #e6eaf1;
-            background: #fff;
-            padding: 8px;
+            border-top: 1px solid #eaeaea;
+            padding-top: 8px;
           }
           #botify-chat-input {
             flex: 1;
-            border: none;
+            padding: 10px;
+            border: 1px solid #eaeaea;
+            border-radius: 16px;
+            font-size: 16px;
             outline: none;
-            padding: 10px 12px;
-            border-radius: 8px;
-            font-size: 15px;
-            background: #f2f4f8;
-            margin-right: 8px;
+            transition: border-color 0.2s;
+          }
+          #botify-chat-input:focus {
+            border-color: #2d6cdf;
           }
           #botify-chat-send {
             background: #2d6cdf;
             color: #fff;
             border: none;
-            border-radius: 8px;
-            padding: 0 18px;
-            font-size: 15px;
+            border-radius: 16px;
+            padding: 10px 16px;
+            font-size: 16px;
             cursor: pointer;
+            margin-left: 8px;
             transition: background 0.2s;
           }
-          #botify-chat-send:active {
-            background: #1a4fa0;
+          #botify-chat-send:hover {
+            background: #1f5bb5;
+          }
+          .botify-msg {
+            display: flex;
+            margin-bottom: 12px;
+          }
+          .botify-msg-user {
+            justify-content: flex-end;
+          }
+          .botify-bubble {
+            max-width: 80%;
+            padding: 10px 16px;
+            border-radius: 16px;
+            position: relative;
+            line-height: 1.4;
+          }
+          .botify-bubble-user {
+            background: #2d6cdf;
+            color: #fff;
+            border-bottom-right-radius: 0;
+          }
+          .botify-bubble-bot {
+            background: #f1f1f1;
+            color: #333;
+            border-bottom-left-radius: 0;
           }
           #botify-chat-info-dialog {
             display: none;
@@ -182,31 +167,35 @@
             left: 50%;
             transform: translate(-50%, -50%);
             background: #fff;
-            color: #222;
-            border-radius: 12px;
+            padding: 24px;
+            border-radius: 16px;
             box-shadow: 0 4px 24px rgba(0,0,0,0.18);
-            padding: 28px 24px 20px 24px;
-            z-index: 100000;
-            min-width: 260px;
-            max-width: 90vw;
-            font-size: 16px;
+            z-index: 999999;
+            max-width: 400px;
+            width: 100%;
+          }
+          #botify-chat-info-dialog h3 {
+            margin-bottom: 16px;
+            font-size: 18px;
+            color: #333;
+          }
+          #botify-chat-info-dialog ul {
+            list-style: disc;
+            padding-left: 20px;
+            margin-bottom: 16px;
           }
           #botify-chat-info-dialog button {
-            margin-top: 18px;
             background: #2d6cdf;
             color: #fff;
             border: none;
-            border-radius: 8px;
-            padding: 8px 22px;
-            font-size: 15px;
+            border-radius: 16px;
+            padding: 10px 16px;
+            font-size: 16px;
             cursor: pointer;
-            float: right;
+            transition: background 0.2s;
           }
-          #botify-chat-info-dialog h3 {
-            margin-top: 0;
-            margin-bottom: 10px;
-            font-size: 18px;
-            color: #2d6cdf;
+          #botify-chat-info-dialog button:hover {
+            background: #1f5bb5;
           }
         </style>
       </head>
@@ -247,7 +236,6 @@
         </div>
         <script>
           (function(){
-            const chatWidget = document.getElementById('botify-chat-widget');
             const chatBody = document.getElementById('botify-chat-body');
             const chatInput = document.getElementById('botify-chat-input');
             const chatForm = document.getElementById('botify-chat-input-area');
@@ -256,6 +244,8 @@
             const infoBtn = document.getElementById('botify-chat-question');
             const infoDialog = document.getElementById('botify-chat-info-dialog');
             const infoClose = document.getElementById('botify-chat-info-close');
+
+            let chatBotId = 'ea7d9c6d-a969-407b-80fd-5f3e9bc79b7f'; // You can set this dynamically if needed
 
             closeBtn.onclick = function() {
               parent.document.getElementById('botify-chat-iframe').style.display = 'none';
@@ -289,37 +279,73 @@
               if (from === 'bot' && playSound) playIncomingSound();
             }
 
-            async function getBotReply(message) {
-              // Replace this with your backend API call if needed
-              await new Promise(r => setTimeout(r, 700));
-              return "You said: " + message;
+            // SSE Integration
+            let eventSource;
+            function connectSSE() {
+              if (eventSource) eventSource.close();
+              eventSource = new window.EventSource('http://localhost:4001/chat-sse/events/' + chatBotId);
+
+              eventSource.addEventListener('history', function(event) {
+                try {
+                  const history = JSON.parse(event.data);
+                  chatBody.innerHTML = '';
+                  history.forEach(msg => {
+                    addMessage(msg.content, msg.role, false);
+                  });
+                } catch {}
+              });
+
+              eventSource.onmessage = function(event) {
+                try {
+                  const msg = JSON.parse(event.data);
+                  console.log('New message:', msg);
+                  addMessage(msg.content, msg.role, true);
+                } catch {
+                  addMessage(event.data, 'bot', true);
+                }
+              };
+
+              eventSource.onerror = function() {
+                // Optionally show disconnected status
+              };
             }
+
+            connectSSE();
 
             chatForm.onsubmit = async function(e) {
               e.preventDefault();
               const text = chatInput.value.trim();
               if (!text) return;
-              addMessage(text, 'user');
+              addMessage(text, 'user', false);
               chatInput.value = '';
-              addMessage('...', 'bot', false); // No sound for loading
-              const botMsgDiv = chatBody.querySelectorAll('.botify-msg-bot .botify-bubble');
-              const loadingBubble = botMsgDiv[botMsgDiv.length - 1];
-              try {
-                const reply = await getBotReply(text);
-                loadingBubble.textContent = reply;
-                playIncomingSound();
-              } catch {
-                loadingBubble.textContent = "Sorry, I couldn't process your message.";
-                playIncomingSound();
-              }
-              chatBody.scrollTop = chatBody.scrollHeight;
+              // Send user message to backend
+              fetch('http://localhost:4001/chat-sse/send', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  chatBotId: "ea7d9c6d-a969-407b-80fd-5f3e9bc79b7f",
+                  userInput: text,
+                  userContext: {
+                    timezone: "Asia/Kolkata",
+                    profileImage: "https://ik.imagekit.io/esdata1/botify/botify-logo-1_j7vjRlSiwH.png",
+                    firstName: "Suryansh",
+                    lastName: "Srivastava",
+                    email: "suryansh@exyconn.com",
+                    isUserVerified: true,
+                    role: "general",
+                    userId: "a401375f-f292-4535-a49c-12077bcf1656",
+                    createdAt: "2025-07-25T16:34:23.300Z",
+                    updatedAt: "2025-07-25T16:34:23.300Z"
+                  }
+                })
+              });
             };
 
             function greet() {
               chatBody.innerHTML = '';
               addMessage("Hi! 👋 I'm Botify. How can I help you today?");
             }
-            greet();
+            // greet(); // history event will handle initial messages
           })();
         </script>
       </body>
@@ -330,14 +356,12 @@
 
   // Inject chat UI when iframe loads
   iframe.onload = injectChat;
-  // For some browsers, onload may not fire if iframe is already loaded, so call directly as well
   setTimeout(() => {
     if (iframe.contentDocument && iframe.contentDocument.body.childNodes.length === 0) {
       injectChat();
     }
   }, 100);
 
-  // Optional: open with Enter if focused on page
   window.addEventListener('keydown', function (e) {
     if (e.key === '/' && document.activeElement === document.body) {
       toggleBtn.click();
