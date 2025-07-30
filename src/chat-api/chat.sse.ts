@@ -26,6 +26,7 @@ const router = express.Router();
 const clients: SSEClients = {};
 
 router.get("/events/:chatBotId", async (req: Request, res: Response) => {
+  res.setHeader('Content-Type', 'text/event-stream');
   const chatBotId = req.params.chatBotId;
   res.set({
     "Content-Type": "text/event-stream",
@@ -62,6 +63,7 @@ router.get("/events/:chatBotId", async (req: Request, res: Response) => {
 });
 
 router.post("/send", async (req: Request, res: Response) => {
+  res.setHeader('Content-Type', 'text/event-stream');
   const { chatBotId, userInput, userContext } = req.body as {
     chatBotId: string;
     userInput: string;

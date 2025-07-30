@@ -7,7 +7,7 @@ const router = Router();
 
 dotenv.config();
 
-const openai = new OpenAI({  });
+const openai = new OpenAI();
 
 /**
  * Calls OpenAI ChatGPT and returns the response as a string.

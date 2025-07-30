@@ -23,11 +23,11 @@
   toggleBtn.style.position = 'fixed';
   toggleBtn.style.bottom = '24px';
   toggleBtn.style.right = '24px';
-  toggleBtn.style.width = '60px';
-  toggleBtn.style.height = '60px';
-  toggleBtn.style.background = '#2d6cdf';
+  toggleBtn.style.width = '160px';
+  toggleBtn.style.height = '160px';
+  // toggleBtn.style.background = '#fff';
   toggleBtn.style.borderRadius = '50%';
-  toggleBtn.style.boxShadow = '0 4px 16px rgba(0,0,0,0.18)';
+  // toggleBtn.style.boxShadow = '0 4px 16px rgba(0,0,0,0.18)';
   toggleBtn.style.display = 'flex';
   toggleBtn.style.alignItems = 'center';
   toggleBtn.style.justifyContent = 'center';
@@ -37,7 +37,11 @@
   toggleBtn.style.zIndex = '99998';
   toggleBtn.style.border = 'none';
   toggleBtn.style.outline = 'none';
-  toggleBtn.innerHTML = '<svg width="32" height="32" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="12" fill="#2d6cdf"/><path d="M7 17v-2a4 4 0 0 1 8 0v2" stroke="#fff" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="9" r="2" fill="#fff"/></svg>';
+  toggleBtn.innerHTML = `
+    <div class="botify-toggle-svg">
+      <img src="https://ik.imagekit.io/esdata1/botify/bot-image.svg" alt="Botify Bot" style="width:100%;height:100%;object-fit:contain;">
+    </div>
+  `;
   document.body.appendChild(toggleBtn);
 
   toggleBtn.onclick = () => {
@@ -56,13 +60,9 @@
       <html>
       <head>
         <style>
-          * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-          }
+          * { box-sizing: border-box; margin: 0; padding: 0; }
           body {
-            font-family: Arial, sans-serif;
+            font-family: 'Inter', Arial, sans-serif;
             background: #f4f4f9;
             display: flex;
             flex-direction: column;
@@ -72,65 +72,106 @@
             display: flex;
             flex-direction: column;
             height: 100%;
-            padding: 16px;
+            padding: 0 0 12px 0;
             background: #fff;
-            border-radius: 16px;
-            box-shadow: 0 4px 24px rgba(0,0,0,0.18);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(44, 108, 223, 0.12);
+            border: 1px solid #e3e9ff;
           }
           #botify-chat-header {
             display: flex;
-            justify-content: space-between;
+            justify-content: flex-end;
             align-items: center;
-            margin-bottom: 12px;
+            padding: 16px 18px 12px 18px;
+            border-bottom: 1px solid #e3e9ff;
+            background: #e3e9ff;
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+            min-height: 56px;
           }
-          #botify-chat-header-left {
+          #botify-chat-header-title {
+            flex: 1;
+            font-weight: 700;
+            color: #2d6cdf;
+            font-size: 20px;
+            letter-spacing: 0.5px;
             display: flex;
             align-items: center;
-            font-weight: bold;
-            color: #333;
+            gap: 8px;
           }
-          #botify-chat-header-left svg {
-            margin-right: 8px;
+          #botify-chat-header-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+          }
+          #botify-chat-question {
+            background: none;
+            border: none;
+            color: #2d6cdf;
+            font-size: 22px;
+            cursor: pointer;
+            transition: color 0.2s;
+            padding: 0;
+            margin: 0;
+          }
+          #botify-chat-question svg {
+            width: 22px;
+            height: 22px;
           }
           #botify-chat-close {
             background: none;
             border: none;
-            color: #333;
-            font-size: 24px;
+            color: #2d6cdf;
+            font-size: 28px;
             cursor: pointer;
+            transition: color 0.2s;
+            font-weight: 700;
+            margin-left: 0;
+          }
+          #botify-chat-close:hover,
+          #botify-chat-question:hover {
+            color: #1f5bb5;
           }
           #botify-chat-body {
             flex: 1;
             overflow-y: auto;
-            margin-bottom: 12px;
-            padding-right: 8px;
+            margin-bottom: 14px;
+            padding: 18px;
+            background: #f7f9fc;
+            border-radius: 12px;
+            border: 1px solid #e3e9ff;
           }
           #botify-chat-input-area {
             display: flex;
-            border-top: 1px solid #eaeaea;
-            padding-top: 8px;
+            border-top: 1px solid #e3e9ff;
+            padding: 10px 18px 0 18px;
+            background: #fff;
+            border-radius: 12px;
           }
           #botify-chat-input {
             flex: 1;
-            padding: 10px;
-            border: 1px solid #eaeaea;
+            padding: 12px 16px;
+            border: 1px solid #e3e9ff;
             border-radius: 16px;
             font-size: 16px;
             outline: none;
-            transition: border-color 0.2s;
+            background: #f7f9fc;
           }
           #botify-chat-input:focus {
             border-color: #2d6cdf;
+            background: #fff;
           }
           #botify-chat-send {
             background: #2d6cdf;
             color: #fff;
             border: none;
             border-radius: 16px;
-            padding: 10px 16px;
+            padding: 12px 22px;
             font-size: 16px;
+            font-weight: 600;
             cursor: pointer;
-            margin-left: 8px;
+            margin-left: 10px;
+            box-shadow: 0 2px 8px rgba(44, 108, 223, 0.08);
             transition: background 0.2s;
           }
           #botify-chat-send:hover {
@@ -138,28 +179,60 @@
           }
           .botify-msg {
             display: flex;
-            margin-bottom: 12px;
+            margin-bottom: 14px;
+            align-items: flex-end;
           }
           .botify-msg-user {
             justify-content: flex-end;
           }
           .botify-bubble {
             max-width: 80%;
-            padding: 10px 16px;
-            border-radius: 16px;
+            padding: 12px 18px;
+            border-radius: 18px;
             position: relative;
-            line-height: 1.4;
+            line-height: 1.5;
+            font-size: 15px;
+            box-shadow: 0 2px 8px rgba(44, 108, 223, 0.06);
+            opacity: 0;
+            transform: translateY(20px);
+            animation: botifyFadeIn 0.5s cubic-bezier(.4,0,.2,1) forwards;
+          }
+          @keyframes botifyFadeIn {
+            to {
+              opacity: 1;
+              transform: translateY(0);
+            }
           }
           .botify-bubble-user {
             background: #2d6cdf;
             color: #fff;
-            border-bottom-right-radius: 0;
+            border-bottom-right-radius: 6px;
+            border-top-right-radius: 18px;
+            border-top-left-radius: 18px;
+            border-bottom-left-radius: 18px;
           }
           .botify-bubble-bot {
-            background: #f1f1f1;
-            color: #333;
-            border-bottom-left-radius: 0;
+            background: #fff;
+            color: #2d6cdf;
+            border-bottom-left-radius: 6px;
+            border-top-right-radius: 18px;
+            border-top-left-radius: 18px;
+            border-bottom-right-radius: 18px;
+            border: 1px solid #e3e9ff;
+            margin-left: 8px;
+            position: relative;
           }
+          .botify-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #e3e9ff;
+            margin-right: 8px;
+            box-shadow: 0 2px 8px rgba(44, 108, 223, 0.08);
+            object-fit: cover;
+            border: 1px solid #e3e9ff;
+          }
+          /* Info dialog styles unchanged */
           #botify-chat-info-dialog {
             display: none;
             position: fixed;
@@ -167,35 +240,54 @@
             left: 50%;
             transform: translate(-50%, -50%);
             background: #fff;
-            padding: 24px;
-            border-radius: 16px;
-            box-shadow: 0 4px 24px rgba(0,0,0,0.18);
+            padding: 28px 24px;
+            border-radius: 18px;
+            box-shadow: 0 8px 32px rgba(44, 108, 223, 0.12);
             z-index: 999999;
             max-width: 400px;
-            width: 100%;
+            width: 90%;
+            border: 1px solid #e3e9ff;
           }
           #botify-chat-info-dialog h3 {
-            margin-bottom: 16px;
-            font-size: 18px;
-            color: #333;
+            margin-bottom: 18px;
+            font-size: 20px;
+            color: #2d6cdf;
+            font-weight: 600;
           }
           #botify-chat-info-dialog ul {
             list-style: disc;
-            padding-left: 20px;
-            margin-bottom: 16px;
+            padding-left: 22px;
+            margin-bottom: 18px;
           }
           #botify-chat-info-dialog button {
             background: #2d6cdf;
             color: #fff;
             border: none;
             border-radius: 16px;
-            padding: 10px 16px;
+            padding: 12px 22px;
             font-size: 16px;
+            font-weight: 600;
             cursor: pointer;
             transition: background 0.2s;
           }
           #botify-chat-info-dialog button:hover {
             background: #1f5bb5;
+          }
+          .botify-toggle-svg {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: botifyBotJump 1.2s cubic-bezier(.4,0,.2,1) infinite;
+          }
+          @keyframes botifyBotJump {
+            0%   { transform: translateY(0); }
+            10%  { transform: translateY(-8px); }
+            20%  { transform: translateY(-16px); }
+            30%  { transform: translateY(-8px); }
+            40%  { transform: translateY(0); }
+            100% { transform: translateY(0); }
           }
         </style>
       </head>
@@ -203,16 +295,19 @@
         <audio id="botify-chat-incoming" src="https://ik.imagekit.io/esdata1/botify/sounds/chat-incoming.mp3?updatedAt=1753703776973" preload="auto"></audio>
         <div id="botify-chat-widget">
           <div id="botify-chat-header">
-            <div id="botify-chat-header-left">
-              <button id="botify-chat-question" title="Info" aria-label="Info">
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                  <circle cx="10" cy="10" r="9" stroke="white" stroke-width="2" fill="none"/>
-                  <text x="10" y="15" text-anchor="middle" font-size="13" fill="white" font-family="Arial, sans-serif">?</text>
-                </svg>
-              </button>
+            <div id="botify-chat-header-title">
+              <img src="https://ik.imagekit.io/esdata1/sibera/avatar/default-profile.png?updatedAt=1717599456712" alt="Botify" style="width:28px;height:28px;border-radius:50%;margin-right:8px;">
               Botify Chat
             </div>
-            <button id="botify-chat-close" title="Close">&times;</button>
+            <div id="botify-chat-header-actions">
+              <button id="botify-chat-question" title="Info" aria-label="Info">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                  <circle cx="10" cy="10" r="9" stroke="#2d6cdf" stroke-width="2" fill="none"/>
+                  <text x="10" y="15" text-anchor="middle" font-size="13" fill="#2d6cdf" font-family="Arial, sans-serif">?</text>
+                </svg>
+              </button>
+              <button id="botify-chat-close" title="Close">&times;</button>
+            </div>
           </div>
           <div id="botify-chat-body"></div>
           <form id="botify-chat-input-area" autocomplete="off">
@@ -270,6 +365,14 @@
             function addMessage(text, from = 'bot', playSound = true) {
               const msg = document.createElement('div');
               msg.className = 'botify-msg ' + (from === 'user' ? 'botify-msg-user' : 'botify-msg-bot');
+              if (from === 'bot') {
+                // Add avatar for bot
+                const avatar = document.createElement('img');
+                avatar.src = "https://ik.imagekit.io/esdata1/sibera/avatar/default-profile.png?updatedAt=1717599456712";
+                avatar.alt = "Bot";
+                avatar.className = "botify-avatar";
+                msg.appendChild(avatar);
+              }
               const bubble = document.createElement('div');
               bubble.className = 'botify-bubble ' + (from === 'user' ? 'botify-bubble-user' : 'botify-bubble-bot');
               bubble.textContent = text;
@@ -298,7 +401,6 @@
               eventSource.onmessage = function(event) {
                 try {
                   const msg = JSON.parse(event.data);
-                  console.log('New message:', msg);
                   addMessage(msg.content, msg.role, true);
                 } catch {
                   addMessage(event.data, 'bot', true);
@@ -327,7 +429,7 @@
                   userInput: text,
                   userContext: {
                     timezone: "Asia/Kolkata",
-                    profileImage: "https://ik.imagekit.io/esdata1/botify/botify-logo-1_j7vjRlSiwH.png",
+                    profileImage: "https://ik.imagekit.io/esdata1/sibera/avatar/avatar-1.jpg?updatedAt=1709531408817",
                     firstName: "Suryansh",
                     lastName: "Srivastava",
                     email: "suryansh@exyconn.com",
