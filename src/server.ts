@@ -65,7 +65,7 @@ app.use('/api-docs/design-system', swaggerUi.serve, swaggerUi.setup(swaggerDocum
 // ==========
 // Middleware
 // ==========
-app.use(cors({
+const corsOptions = {
   origin: [
     'http://localhost:5173',
     'https://botify.life',
@@ -74,10 +74,13 @@ app.use(cors({
   ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS', 'HEAD']
-}));
+};
+
+app.use(cors(corsOptions));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -87,6 +90,14 @@ app.use(
   })
 );
 
+// Set CORS and Content-Type headers for JS files served from /static
+app.use('/static', (req, res, next) => {
+  if (req.url.endsWith('.js')) {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Content-Type', 'application/javascript');
+  }
+  next();
+});
 // Serve static files from the "static" folder (for embed/chat widget, etc.)
 app.use('/static', express.static(path.join(__dirname, '../static')));
 

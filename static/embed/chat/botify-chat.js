@@ -289,6 +289,41 @@
             40%  { transform: translateY(0); }
             100% { transform: translateY(0); }
           }
+          .botify-loader-spinner {
+            width: 38px;
+            height: 38px;
+            border: 4px solid #e3e9ff;
+            border-top: 4px solid #2d6cdf;
+            border-radius: 50%;
+            animation: botifySpin 0.8s linear infinite;
+            background: none;
+          }
+          @keyframes botifySpin {
+            100% { transform: rotate(360deg); }
+          }
+          .botify-loader-typing {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 6px;
+            height: 32px;
+          }
+          .botify-loader-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #2d6cdf;
+            opacity: 0.6;
+            animation: botifyTyping 1.2s infinite;
+          }
+          .botify-loader-dot:nth-child(2) { animation-delay: 0.2s; }
+          .botify-loader-dot:nth-child(3) { animation-delay: 0.4s; }
+          @keyframes botifyTyping {
+            0% { opacity: 0.3; transform: translateY(0);}
+            20% { opacity: 1; transform: translateY(-6px);}
+            40% { opacity: 0.6; transform: translateY(0);}
+            100% { opacity: 0.3; transform: translateY(0);}
+          }
         </style>
       </head>
       <body>
@@ -372,6 +407,7 @@
                 avatar.alt = "Bot";
                 avatar.className = "botify-avatar";
                 msg.appendChild(avatar);
+                removeLoader(); // <-- Remove loader when bot replies
               }
               const bubble = document.createElement('div');
               bubble.className = 'botify-bubble ' + (from === 'user' ? 'botify-bubble-user' : 'botify-bubble-bot');
@@ -380,6 +416,33 @@
               chatBody.appendChild(msg);
               chatBody.scrollTop = chatBody.scrollHeight;
               if (from === 'bot' && playSound) playIncomingSound();
+            }
+
+            function addLoader() {
+              const oldLoader = document.getElementById('botify-chat-loader');
+              if (oldLoader) oldLoader.remove();
+
+              const loader = document.createElement('div');
+              loader.id = 'botify-chat-loader';
+              loader.innerHTML = '<div class="botify-loader-typing"> <div class="botify-loader-dot"></div> <div class="botify-loader-dot"></div> <div class="botify-loader-dot"></div> </div>';
+              loader.style.position = 'absolute';
+              loader.style.left = '0';
+              loader.style.right = '0';
+              loader.style.bottom = '18px';
+              loader.style.height = '32px';
+              loader.style.display = 'flex';
+              loader.style.alignItems = 'center';
+              loader.style.justifyContent = 'flex-start';
+              loader.style.background = 'rgba(255,255,255,0.0)';
+              loader.style.zIndex = '999999';
+              loader.style.borderRadius = '12px';
+              loader.style.pointerEvents = 'none';
+              document.getElementById('botify-chat-body').appendChild(loader);
+            }
+
+            function removeLoader() {
+              const loader = document.getElementById('botify-chat-loader');
+              if (loader) loader.remove();
             }
 
             // SSE Integration
@@ -420,6 +483,7 @@
               if (!text) return;
               addMessage(text, 'user', false);
               chatInput.value = '';
+              addLoader(); // Show loader
               // Send user message to backend
               fetch('http://localhost:4001/chat-sse/send', {
                 method: 'POST',
