@@ -71,13 +71,18 @@ const corsOptions = {
     'https://botify.life',
     'https://app.botify.life',
     'http://localhost:4322',
-    'app.botify.life'
+    'app.botify.life',
+    'botify.life',
+    'https://botify.exyconn.com',
+    'exyconn.com',
+    'https://exyconn.com',
+    'http://exyconn.com'
   ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS', 'HEAD']
 };
 
-app.use(cors());
+app.use(cors(corsOptions));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
